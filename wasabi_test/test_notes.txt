@@ -1,0 +1,5 @@
+This Test Folder Would Hold:
+- Testing the system in parts
+- Tested Architecture systems
+- Proxy Solutions
+- Test Different Technologies Modern vs Legacy
