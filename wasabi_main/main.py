@@ -1,3 +1,4 @@
+# main.py
 import multiprocessing
 from gui.main_window import run_gui
 
