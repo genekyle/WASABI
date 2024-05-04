@@ -32,8 +32,12 @@ class IndeedTask:
         context = await self.browser_manager.launch_browser()
         page = await context.new_page()
         await login.login(page)
+        job_search_input = self.task_config["job_search_input"]
+
 
         print(f"Selected location: {selected_location}")
+        print(f"Job search input: {job_search_input}")
+
 
         # Implement other Indeed-specific tasks
 
@@ -58,6 +62,11 @@ class IndeedTask:
                     "label": "Select Location",
                     "type": "dropdown",
                     "options": locations
+                },
+                {
+                    "key": "job_search_input",
+                    "label": "Job Search Input",
+                    "type": "line_edit"
                 }
             ]
         }
