@@ -11,7 +11,7 @@ class IndeedTask:
 
     @staticmethod
     def load_user_profiles():
-        with open("user_profiles.json", "r") as f:
+        with open(r"D:\code\WASABI\wasabi_main\tasks\indeed_task\user_profiles.json", "r") as f:
             data = json.load(f)
             return data["user_profiles"]
 
@@ -37,6 +37,11 @@ class IndeedTask:
 
         return {
             "inputs": [
-                {"label": "Select Profile", "type": "dropdown", "options": profile_names}
+                {
+                    "key": "selected_profile",
+                    "label": "Select Profile",
+                    "type": "dropdown",
+                    "options": profile_names
+                }
             ]
         }

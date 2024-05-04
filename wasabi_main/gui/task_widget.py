@@ -84,26 +84,29 @@ class TaskConfigDialog(QDialog):
         for input_spec in spec.get("inputs", []):
             input_type = input_spec.get("type", "line_edit")
             label = input_spec["label"]
+            key = input_spec["key"]
 
             layout.addWidget(QLabel(label))
 
             if input_type == "line_edit":
                 input_field = QLineEdit(self)
                 layout.addWidget(input_field)
-                self.input_fields[label] = input_field
+                self.input_fields[key] = input_field
             elif input_type == "dropdown":
                 dropdown = QComboBox(self)
                 dropdown.addItems(input_spec.get("options", []))
                 layout.addWidget(dropdown)
-                self.input_fields[label] = dropdown
+                self.input_fields[key] = dropdown
 
     def start_task(self):
         config = {}
-        for label, field in self.input_fields.items():
+        for key, field in self.input_fields.items():
             if isinstance(field, QLineEdit):
-                config[label] = field.text()
+                config[key] = field.text()
             elif isinstance(field, QComboBox):
-                config[label] = field.currentText()
+                config[key] = field.currentText()
+
+        print("Configuration passed to task:", config)  # Debugging output
 
         task = self.task_class(config)
         self.task_thread = TaskThread(task)
@@ -113,4 +116,3 @@ class TaskConfigDialog(QDialog):
     def task_complete(self):
         print("Task Complete")
         self.accept()
-
