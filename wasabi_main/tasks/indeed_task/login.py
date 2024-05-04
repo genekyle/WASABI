@@ -9,4 +9,4 @@ class IndeedLogin:
     async def login(self, page):
         # Navigate to Indeed's login page
         await page.goto("https://www.indeed.com/")
-        await asyncio.sleep(20)  # For demonstration
+        await asyncio.sleep(100)  # For demonstration

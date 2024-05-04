@@ -1,5 +1,6 @@
 # browser_manager.py
 from playwright.async_api import async_playwright
+import os
 
 class BrowserManager:
     def __init__(self):
@@ -11,7 +12,14 @@ class BrowserManager:
         if not self.playwright:
             self.playwright = await async_playwright().start()
 
-        self.browser = await self.playwright.chromium.launch(headless=False)
+        self.browser = await self.playwright.chromium.launch(
+            headless=False,
+            proxy={
+                "server": "http://45.203.245.56:7777",
+                "username": "lu9118235",
+                "password": "dcPbzD"
+            }
+        )
         self.context = await self.browser.new_context()
         return self.context
 
