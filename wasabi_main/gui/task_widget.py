@@ -105,8 +105,6 @@ class TaskConfigDialog(QDialog):
             elif isinstance(field, QComboBox):
                 config[label] = field.currentText()
 
-        print("Task configuration:", config)  # Debugging output
-
         task = self.task_class(config)
         self.task_thread = TaskThread(task)
         self.task_thread.task_complete.connect(self.task_complete)

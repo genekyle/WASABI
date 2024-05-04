@@ -1,4 +1,4 @@
-# indeed_task.py
+import json
 import asyncio
 from tasks.browser_manager import BrowserManager
 from playwright.async_api import async_playwright
@@ -9,11 +9,21 @@ class IndeedTask:
         self.task_config = task_config
         self.browser_manager = BrowserManager()
 
+    @staticmethod
+    def load_user_profiles():
+        with open("user_profiles.json", "r") as f:
+            data = json.load(f)
+            return data["user_profiles"]
+
     async def run(self):
+        selected_profile = self.task_config["selected_profile"]
+
+        user_profiles = self.load_user_profiles()
+        selected_user = next(profile for profile in user_profiles if profile["profile_name"] == selected_profile)
+
+        login = IndeedLogin(username=selected_user["username"], password=selected_user["password"])
         context = await self.browser_manager.launch_browser()
         page = await context.new_page()
-
-        login = IndeedLogin(username=self.task_config["Username"], password=self.task_config["Password"])
         await login.login(page)
 
         # Implement other Indeed-specific tasks
@@ -22,9 +32,11 @@ class IndeedTask:
 
     @staticmethod
     def configuration_spec():
+        user_profiles = IndeedTask.load_user_profiles()
+        profile_names = [profile["profile_name"] for profile in user_profiles]
+
         return {
             "inputs": [
-                {"label": "Username", "type": "line_edit"},
-                {"label": "Password", "type": "line_edit"}
+                {"label": "Select Profile", "type": "dropdown", "options": profile_names}
             ]
         }
