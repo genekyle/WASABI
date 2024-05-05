@@ -22,5 +22,5 @@ class IndeedLogin:
         login_xpath = f"//a[contains(@href, '{login_url}')]"
         
         # Use hover_and_click from actions module to interact with the login link
-        await hover_and_click(page, login_xpath, "login link button",)
+        await hover_and_click(page, login_xpath, "login link button","short","medium")
         await asyncio.sleep(100)  # For demonstration
