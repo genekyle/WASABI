@@ -19,8 +19,14 @@ class IndeedLogin:
 
         # Find the login link by checking if the href contains the required URL
         login_url = "https://secure.indeed.com/account/login"
-        login_xpath = f"//a[contains(@href, '{login_url}')]"
+        login_button_xpath = f"//a[contains(@href, '{login_url}')]"
         
         # Use hover_and_click from actions module to interact with the login link
-        await hover_and_click(page, login_xpath, "login link button","short","medium")
+        await hover_and_click(
+            page=page,
+            xpath=login_button_xpath,   # XPath of the element
+            element_description="Submit Button",  # Description of the element
+            hover_pause_type="short",  # Pause type before hover
+            click_pause_type="medium"  # Pause type before click
+        )
         await asyncio.sleep(100)  # For demonstration

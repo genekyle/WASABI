@@ -1,17 +1,19 @@
 import asyncio
 import random
 from typing import Optional, Callable, Any
-from playwright.async_api import Page, TimeoutError, ElementHandleError
+from playwright.async_api import Page, TimeoutError
+from functools import wraps
 
-def handle_element_errors(func: Callable) -> Callable:
-    """Decorator to handle element-related errors with dynamic messages."""
-    async def wrapper(page: Page, xpath: str, element_description: str, *args, **kwargs) -> Any:
+def handle_element_errors(func):
+    """Decorator to handle errors for actions performed on page elements, capturing all arguments flexibly."""
+    @wraps(func)  # Use wraps to preserve metadata like the function's name and docstring
+    async def wrapper(*args, **kwargs):
+        # Attempt to extract element_description intelligently based on args or kwargs
+        element_description = kwargs.get('element_description', args[2] if len(args) > 2 else 'Unknown element')
         try:
-            return await func(page, xpath, *args, **kwargs)
+            return await func(*args, **kwargs)
         except TimeoutError as e:
             print(f"Timeout error while interacting with {element_description}: {e}")
-        except ElementHandleError as e:
-            print(f"Handle error while interacting with {element_description}: {e}")
         except Exception as e:
             print(f"An unexpected error occurred while interacting with {element_description}: {e}")
     return wrapper
@@ -79,3 +81,6 @@ async def hover_and_click(page: Page, xpath: str, element_description: str,
 
     # Random wait after clicking
     await random_wait(click_pause_type)
+
+    # Debugger Print Statement
+    print(f"Successfully hover and clicked on {element_description}, using click pause type: {click_pause_type} and hover pause type:{hover_pause_type}.")
