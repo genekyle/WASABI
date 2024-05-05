@@ -38,8 +38,33 @@ async def random_wait(pause_type: Optional[str] = None):
     await asyncio.sleep(wait_time)
 
 @handle_element_errors
-async def hover_and_click(page: Page, xpath: str, element_description: str, hover_pause_type: Optional[str] = None, click_pause_type: Optional[str] = None):
-    """Random wait, hover over an element, random wait, then click it, with dynamic error messages."""
+async def hover_and_click(page: Page, xpath: str, element_description: str, 
+                          hover_pause_type: Optional[str] = None, 
+                          click_pause_type: Optional[str] = None):
+    """
+    Perform a hover and click action on a specified element, with optional random waits before each action.
+
+    Args:
+        page (Page): The Playwright page object where actions will be performed.
+        xpath (str): The XPath of the element to interact with.
+        element_description (str): A brief description of the element for enhanced error messages.
+        hover_pause_type (Optional[str], optional): The type of pause before the hover action. Accepts 'short', 'medium', or 'long'. If None, a random pause type is chosen.
+        click_pause_type (Optional[str], optional): The type of pause before the click action. Similar to hover_pause_type. If None, a random pause type is chosen.
+
+    This function first performs a hover action on the specified element, optionally waiting for a randomized time 
+    before hovering. After hovering, the function waits again (optionally with a specified pause duration) and then 
+    performs a click action. Both actions incorporate dynamic error handling to catch and report any issues related 
+    to element interaction, enhancing debugging and reliability of the automation script.
+
+    Example usage:
+        await hover_and_click(page, "//button[@id='submit']", "Submit Button", "short", "medium")
+
+    Raises:
+        TimeoutError: If the element is not found within the specified time or the page times out.
+        ElementHandleError: If there are issues with the element handle, such as the element not being interactable.
+        Exception: For any other unforeseen issues that may occur during the hover or click actions.
+    """
+
     # Random wait before hovering
     await random_wait(hover_pause_type)
 
