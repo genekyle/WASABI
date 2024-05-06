@@ -84,3 +84,63 @@ async def hover_and_click(page: Page, xpath: str, element_description: str,
 
     # Debugger Print Statement
     print(f"Successfully hover and clicked on {element_description}, using click pause type: {click_pause_type} and hover pause type:{hover_pause_type}.")
+
+async def confirm_navigation(page: Page, page_name: str, expected_url_contains: Optional[str] = None, 
+                             xpath_selector: Optional[str] = None, timeout: int = 10000):
+    """
+    Confirms that the current page's URL contains a specified substring or that a specific element is present using XPath.
+    This function is designed to ensure that navigation has reached the correct destination and can handle dynamic URL structures.
+
+    Args:
+        page (Page): The Playwright page object on which actions are performed.
+        page_name (str): A descriptive name for the page, used for logging and error messages.
+        expected_url_contains (Optional[str]): A substring that should be present in the current page's URL. This parameter 
+                                               is useful for situations where the exact URL is not known ahead of time or can vary.
+        xpath_selector (Optional[str]): An XPath selector specifying an element that should be present on the page. This is used
+                                        to confirm that the expected content has loaded.
+        timeout (int): The maximum time, in milliseconds, to wait for the URL or element to be confirmed.
+
+    Raises:
+        TimeoutError: If the URL does not contain the expected substring or the element does not appear within the specified timeout.
+        ValueError: If neither `expected_url_contains` nor `xpath_selector` is provided, indicating that there are no criteria specified for confirmation.
+
+    Returns:
+        bool: True if the navigation is confirmed by either URL or element presence, False otherwise.
+
+    Example Usage:
+        # Confirm navigation to a page where the URL is expected to contain 'profile' and a specific header is present
+        await confirm_navigation(page, "UserProfile", expected_url_contains="profile",
+                                 xpath_selector="//h1[contains(text(), 'User Profile')]", timeout=15000)
+    """
+    try:
+        if expected_url_contains:
+            # Wait until the URL contains the specified substring
+            await page.wait_for_function(
+                f"window.location.href.includes('{expected_url_contains}')", timeout=timeout)
+            current_url = page.url
+            if expected_url_contains not in current_url:
+                raise TimeoutError(f"Expected URL part '{expected_url_contains}' not found in {current_url}")
+            print(f"Navigation to {page_name} confirmed, URL contains: {expected_url_contains}")
+
+        if xpath_selector:
+            await page.wait_for_selector(f'xpath={xpath_selector}', state="attached", timeout=timeout)
+            print(f"Element confirmed on {page_name} using XPath: {xpath_selector}")
+
+    except TimeoutError as e:
+        print(f"Failed to confirm {page_name}. Error: {e}")
+        # Optional: Handle additional checks for bot detection or other issues
+        await handle_additional_checks(page)
+
+    if not expected_url_contains and not xpath_selector:
+        raise ValueError("Either expected_url_contains or xpath_selector must be provided for {page_name}.")
+
+    return True
+
+# Placeholder function for possible bot detection page
+async def handle_additional_checks(page: Page):
+    """
+    Placeholder function for handling unexpected page conditions such as bot detection or other security measures.
+    """
+    # Placeholder for additional checks
+    # Example: await page.wait_for_selector("selector_for_bot_check", timeout=500)
+    print("Additional check needed here! Implement detection and handling for bot security measures.")
