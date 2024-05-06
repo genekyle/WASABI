@@ -64,6 +64,19 @@ class IndeedLogin:
             click_pause_type="medium"
         )
         self.action_task.random_wait("short")
+        # Check for CAPTCHA
+        captcha_detected = await self.action_task.check_for_captcha_and_pause(page)
+        if captcha_detected:
+            print("CAPTCHA resolved, proceeding with further actions.")
+            await self.action_task.hover_and_click(
+            page=page,
+            xpath=submit_button_xpath,
+            element_description="Continue Button - Login",
+            hover_pause_type="short",
+            click_pause_type="medium"
+        )
+        else:
+            print("Proceeding without CAPTCHA intervention.")
         
         # Confirm that the password field has appeared
         password_input_xpath = "//input[contains(@type,'password')]"
@@ -91,5 +104,19 @@ class IndeedLogin:
             click_pause_type="medium"
         )
         await self.action_task.random_wait("long")
+        captcha_detected = await self.action_task.check_for_captcha_and_pause(page)
+        if captcha_detected:
+            print("CAPTCHA resolved, proceeding with further actions.")
+            await self.action_task.hover_and_click(
+            page=page,
+            xpath=sign_in_button_xpath,
+            element_description="Sign In Button - Login",
+            hover_pause_type="short",
+            click_pause_type="medium"
+        )
+        else:
+            print("Proceeding without CAPTCHA intervention.")
+        
+        
 
-        await asyncio.sleep(120)  # For demonstration purposes
+        await asyncio.sleep(300)  # For demonstration purposes

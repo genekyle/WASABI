@@ -113,6 +113,8 @@ class TaskConfigDialog(QDialog):
         self.task_thread.task_complete.connect(self.task_complete)
         self.task_thread.start()
 
+        self.accept()
+
     def task_complete(self):
         print("Task Complete")
-        self.accept()
+        

@@ -4,6 +4,7 @@ import logging
 from typing import Optional, Callable, Any
 from playwright.async_api import Page, TimeoutError
 from functools import wraps
+from asyncio import Event
 
 logging.basicConfig(level=logging.INFO)
 
@@ -11,6 +12,8 @@ class GlobalActionTask:
     def __init__(self):
         # Dictionary to store mosue coordinates/position
         self.mouse_tracker = {'x': None, 'y': None}
+        self.interaction_allowed = Event()
+        self.interaction_allowed.set()  # Initially allow interaction
 
     def handle_element_errors(func):
         """Decorator to handle errors for actions performed on page elements, capturing all arguments flexibly."""
@@ -25,6 +28,38 @@ class GlobalActionTask:
             except Exception as e:
                 logging.error(f"An unexpected error occurred while interacting with {element_description}: {e}")
         return wrapper
+    
+    async def check_for_captcha_and_pause(self, page: Page):
+        """
+        Check for the presence of a CAPTCHA challenge based on a known selector and pause automation for manual resolution.
+        Wait for a 'success' message to ensure CAPTCHA was correctly solved.
+
+        Args:
+            page (Page): The Playwright page object to check for CAPTCHA.
+
+        Returns:
+            bool: True if CAPTCHA was detected and resolved, False otherwise.
+        """
+        try:
+            # Specific CAPTCHA container with a descendant link containing 'cloudflare'
+            await page.wait_for_selector("//div[@id='content'][.//a[contains(@href, 'cloudflare')]]", state="visible", timeout=5000)
+            print("CAPTCHA detected. Please solve the CAPTCHA manually.")
+            self.interaction_allowed.clear()  # Block further interactions
+
+            # Wait for the success div to become visible, indicating CAPTCHA has been solved
+            await page.wait_for_selector("//div[@id='success'][contains(@style, 'visible')]", state="visible", timeout=30000)
+            print("CAPTCHA solved. Resuming automation.")
+            self.interaction_allowed.set()  # Allow interactions again
+            return True
+        except TimeoutError:
+            print("Timeout occurred: CAPTCHA was not solved in time or did not appear.")
+            self.interaction_allowed.set()  # Ensure interactions are allowed if an error occurs
+            return False
+        except Exception as e:
+            print(f"An unexpected error occurred: {str(e)}")
+            self.interaction_allowed.set()  # Ensure interactions are allowed if an error occurs
+            return False
+
 
     def random_pause_type(self) -> str:
         """Randomly select a pause type: 'short', 'medium', or 'long'."""
