@@ -45,7 +45,7 @@ class IndeedLogin:
         else:
             print(f"Failed to Navigate to: {page_name}")
 
-        # Look for and click on the username input
+        # Look for, click on and type in the username input
         email_address_input_xpath = "//input[contains(@type, 'email')]"
         await self.action_task.human_type(
             page=page,
@@ -53,5 +53,43 @@ class IndeedLogin:
             element_description="Email Input - Login",
             text=self.username
         )
+        
+        # Submit email to open password input
+        submit_button_xpath = "//button[contains(@type,'submit')]"
+        await self.action_task.hover_and_click(
+            page=page,
+            xpath=submit_button_xpath,
+            element_description="Continue Button - Login",
+            hover_pause_type="short",
+            click_pause_type="medium"
+        )
+        self.action_task.random_wait("short")
+        
+        # Confirm that the password field has appeared
+        password_input_xpath = "//input[contains(@type,'password')]"
+        if await self.action_task.confirm_dynamic_update(page, "Password field appearance", password_input_xpath, timeout=15000):
+            print("Password field appeared successfully.")
+        else:
+            print("Failed to observe the appearance of the password field.")
 
-        await asyncio.sleep(100)  # For demonstration purposes
+        # Look for, click on and type in the password input
+        await self.action_task.human_type(
+            page=page,
+            xpath=password_input_xpath,
+            element_description="Password Input - Login",
+            text=self.password
+        )
+        await self.action_task.random_wait("short")
+        
+        # Sign in
+        sign_in_button_xpath = "//button[contains(@data-tn-element,'submit')]"
+        await self.action_task.hover_and_click(
+            page=page,
+            xpath=sign_in_button_xpath,
+            element_description="Sign In Button - Login",
+            hover_pause_type="short",
+            click_pause_type="medium"
+        )
+        await self.action_task.random_wait("long")
+
+        await asyncio.sleep(120)  # For demonstration purposes

@@ -122,6 +122,37 @@ class GlobalActionTask:
         print(f"Successfully hovered over and clicked on {element_description}, using click pause type: {click_pause_type} and hover pause type: {hover_pause_type}.")
     
     @handle_element_errors
+    async def confirm_dynamic_update(self, page: Page, update_description: str, expected_xpath: str, 
+                                    timeout: int = 10000, state: str = "visible"):
+        """
+        Confirm that a dynamic update has occurred on the page by checking for the presence or absence of an element.
+
+        Args:
+            page (Page): The Playwright page object on which the check is performed.
+            update_description (str): A description of the update expected, used for logging and error messages.
+            expected_xpath (str): The XPath of the element that should appear or disappear as confirmation of the update.
+            timeout (int): The maximum time, in milliseconds, to wait for the element to reach the desired state.
+            state (str): The state to wait for, 'visible' for element appearance, 'hidden' for disappearance.
+
+        Returns:
+            bool: True if the update is confirmed by the element's state change, False otherwise.
+
+        Raises:
+            TimeoutError: If the element does not reach the desired state within the timeout.
+        """
+        try:
+            if state == "visible":
+                await page.wait_for_selector(f'xpath={expected_xpath}', state="attached", timeout=timeout)
+                print(f"Update confirmed: {update_description}, {expected_xpath} is now visible.")
+            elif state == "hidden":
+                await page.wait_for_selector(f'xpath={expected_xpath}', state="detached", timeout=timeout)
+                print(f"Update confirmed: {update_description}, {expected_xpath} is now hidden.")
+            return True
+        except TimeoutError as e:
+            print(f"Failed to confirm dynamic update for {update_description}. Error: {e}")
+            return False
+    
+    @handle_element_errors
     async def confirm_navigation(self, page: Page, page_name: str, expected_url_contains: Optional[str] = None, 
                                 xpath_selector: Optional[str] = None, timeout: int = 10000):
         """
@@ -168,7 +199,7 @@ class GlobalActionTask:
 
         return True
 
-    async def human_type(self, page, xpath, element_description: str, text, min_delay=0.09, max_delay=0.25):
+    async def human_type(self, page, xpath, element_description: str, text, min_delay=0.05, max_delay=0.15):
         target_x, target_y = await self.get_target_coordinates(page, xpath)
 
         # Move mouse to the element and click to focus
