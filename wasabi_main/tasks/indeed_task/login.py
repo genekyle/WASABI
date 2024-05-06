@@ -45,4 +45,13 @@ class IndeedLogin:
         else:
             print(f"Failed to Navigate to: {page_name}")
 
+        # Look for and click on the username input
+        email_address_input_xpath = "//input[contains(@type, 'email')]"
+        await self.action_task.human_type(
+            page=page,
+            xpath=email_address_input_xpath,
+            element_description="Email Input - Login",
+            text=self.username
+        )
+
         await asyncio.sleep(100)  # For demonstration purposes

@@ -47,6 +47,24 @@ class GlobalActionTask:
         wait_time = self.random_wait_duration(pause_type)
         await asyncio.sleep(wait_time)
 
+    async def get_target_coordinates(self, page, selector):
+        """
+        Calculate the center coordinates of an element given its selector.
+        
+        Args:
+            page (Page): The Playwright page object.
+            selector (str): The selector of the element to find the center of.
+
+        Returns:
+            tuple: A tuple containing the x and y coordinates of the element's center.
+        """
+        element = await page.wait_for_selector(selector)
+        box = await element.bounding_box()
+        center_x = box['x'] + box['width'] / 2
+        center_y = box['y'] + box['height'] / 2
+        return center_x, center_y
+
+
     def calculate_bezier_point(self, t, start, control1, control2, end):
         """Calculate a point in a cubic Bezier curve."""
         return (1 - t)**3 * start + 3 * (1 - t)**2 * t * control1 + 3 * (1 - t) * t**2 * control2 + t**3 * end
@@ -75,9 +93,7 @@ class GlobalActionTask:
         if not await element.is_visible():
             raise Exception(f"The element {element_description} is not visible.")
 
-        box = await element.bounding_box()
-        target_x = box['x'] + box['width'] / 2
-        target_y = box['y'] + box['height'] / 2
+        target_x, target_y = await self.get_target_coordinates(page, xpath)
 
         # Move from the last known mouse position to the new element
         if self.mouse_tracker['x'] is not None and self.mouse_tracker['y'] is not None:
@@ -85,14 +101,26 @@ class GlobalActionTask:
         else:
             await page.mouse.move(target_x, target_y)
 
+        # Update the mouse tracker with the new position
         self.mouse_tracker['x'], self.mouse_tracker['y'] = target_x, target_y
 
+        # Random wait before hovering
         await self.random_wait(hover_pause_type)
-        await page.hover(xpath)
+        
+        # Hover using precise coordinates
+        await page.mouse.move(target_x, target_y)
+        
+        # Random wait after hovering and before clicking
         await self.random_wait(click_pause_type)
+        
+        # Click using precise coordinates
         await page.mouse.click(target_x, target_y)
-        print(f"Successfully hover and clicked on {element_description}, using click pause type: {click_pause_type} and hover pause type:{hover_pause_type}.")
+        
+        # Random wait after clicking
+        await self.random_wait(click_pause_type)
 
+        print(f"Successfully hovered over and clicked on {element_description}, using click pause type: {click_pause_type} and hover pause type: {hover_pause_type}.")
+    
     @handle_element_errors
     async def confirm_navigation(self, page: Page, page_name: str, expected_url_contains: Optional[str] = None, 
                                 xpath_selector: Optional[str] = None, timeout: int = 10000):
@@ -139,6 +167,30 @@ class GlobalActionTask:
             raise ValueError(f"Either expected_url_contains or xpath_selector must be provided for {page_name}.")
 
         return True
+
+    async def human_type(self, page, xpath, element_description: str, text, min_delay=0.09, max_delay=0.25):
+        target_x, target_y = await self.get_target_coordinates(page, xpath)
+
+        # Move mouse to the element and click to focus
+        if self.mouse_tracker['x'] is not None and self.mouse_tracker['y'] is not None:
+            await self.smooth_mouse_move(page, self.mouse_tracker['x'], self.mouse_tracker['y'], target_x, target_y)
+        else:
+            await page.mouse.move(target_x, target_y)
+
+        await page.mouse.click(target_x, target_y)  # Click to focus the input field
+        self.mouse_tracker['x'], self.mouse_tracker['y'] = target_x, target_y  # Update the mouse position tracker
+        await self.random_wait('short')
+        for char in text:
+            # Simulate pressing the key
+            await page.keyboard.down(char)
+            # Wait for a human-like delay before releasing the key
+            await asyncio.sleep(random.uniform(min_delay, max_delay))
+            # Simulate releasing the key
+            await page.keyboard.up(char)
+            # Wait for a human-like delay before the next key press
+            await asyncio.sleep(random.uniform(min_delay, max_delay))
+
+        print(f"Finished typing '{text}' into {element_description} with human-like delays.")
 
     async def handle_additional_checks(self, page: Page):
         """
