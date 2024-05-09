@@ -6,7 +6,7 @@ def run(playwright):
     page = browser.new_page()
     
     # Navigate to the webpage
-    url = 'https://careers.mta.org/jobs/14175824-specialist-software-engineer-microsoft-power-apps-slash-dynamics-365'
+    url = 'https://careers.mta.org/jobs/14052770-specialist-software-platform-engineer'
     page.goto(url)
     
 

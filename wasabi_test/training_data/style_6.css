@@ -1,0 +1,1611 @@
+/*
+! tailwindcss v3.2.4 | MIT License | https://tailwindcss.com
+*/
+
+/*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box;
+  /* 1 */
+  border-width: 0;
+  /* 2 */
+  border-style: solid;
+  /* 2 */
+  border-color: #e5e7eb;
+  /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+5. Use the user's configured `sans` font-feature-settings by default.
+*/
+
+html {
+  line-height: 1.5;
+  /* 1 */
+  -webkit-text-size-adjust: 100%;
+  /* 2 */
+  -moz-tab-size: 4;
+  /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4;
+  /* 3 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  /* 4 */
+  font-feature-settings: normal;
+  /* 5 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0;
+  /* 1 */
+  line-height: inherit;
+  /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0;
+  /* 1 */
+  color: inherit;
+  /* 2 */
+  border-top-width: 1px;
+  /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  /* 1 */
+  font-size: 1em;
+  /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0;
+  /* 1 */
+  border-color: inherit;
+  /* 2 */
+  border-collapse: collapse;
+  /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit;
+  /* 1 */
+  font-size: 100%;
+  /* 1 */
+  font-weight: inherit;
+  /* 1 */
+  line-height: inherit;
+  /* 1 */
+  color: inherit;
+  /* 1 */
+  margin: 0;
+  /* 2 */
+  padding: 0;
+  /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button;
+  /* 1 */
+  background-color: transparent;
+  /* 2 */
+  background-image: none;
+  /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield;
+  /* 1 */
+  outline-offset: -2px;
+  /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button;
+  /* 1 */
+  font: inherit;
+  /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1;
+  /* 1 */
+  color: #9ca3af;
+  /* 2 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1;
+  /* 1 */
+  color: #9ca3af;
+  /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block;
+  /* 1 */
+  vertical-align: middle;
+  /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+
+[hidden] {
+  display: none;
+}
+
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
+.mta-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.mta-fixed {
+  position: fixed;
+}
+
+.mta-absolute {
+  position: absolute;
+}
+
+.mta-relative {
+  position: relative;
+}
+
+.mta-left-0 {
+  left: 0px;
+}
+
+.mta-top-0 {
+  top: 0px;
+}
+
+.mta-bottom-0 {
+  bottom: 0px;
+}
+
+.mta-top-full {
+  /*! top: 100%; */
+}
+
+.mta-right-0 {
+  right: 0px;
+}
+
+.mta-top-20 {
+  top: 5rem;
+}
+
+.mta-z-10 {
+  z-index: 10;
+}
+
+.mta-mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mta-my-8 {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.mta-mt-4 {
+  margin-top: 1rem;
+}
+          
+#Alert a {
+	font-weight: bold;
+	text-decoration: underline;   
+    color: rgb(15 97 169 / var(--tw-bg-opacity));
+}
+
+.mta-ml-auto {
+  margin-left: auto;
+}
+
+.mta-mt-12 {
+  margin-top: 3rem;
+}
+
+.mta-mb-8 {
+  margin-bottom: 2rem;
+}
+
+.mta-mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.mta--mt-1 {
+  margin-top: -0.25rem;
+}
+
+.mta-mb-1 {
+  margin-bottom: 0.25rem;
+}
+
+.mta-mr-6 {
+  margin-right: 1.5rem;
+}
+
+.mta-mb-4 {
+  margin-bottom: 1rem;
+}
+
+.mta-mt-2 {
+  margin-top: 0.5rem;
+}
+
+.mta-mb-12 {
+  margin-bottom: 3rem;
+}
+
+.mta-mt-6 {
+  margin-top: 1.5rem;
+}
+
+.mta-block {
+  display: block;
+}
+
+.mta-flex {
+  display: flex;
+}
+
+.mta-inline-flex {
+  display: inline-flex;
+}
+
+.mta-grid {
+  display: grid;
+}
+
+.mta-hidden {
+  display: none;
+}
+
+.mta-h-full {
+  height: 100%;
+}
+
+.mta-h-48 {
+  height: 12rem;
+}
+
+.mta-min-h-\[60px\] {
+  min-height: 60px;
+}
+
+.mta-w-full {
+  width: 100%;
+}
+
+.mta-w-8 {
+  width: 2rem;
+}
+
+.mta-w-\[80px\] {
+  width: 80px;
+}
+
+.mta-w-64 {
+  width: 16rem;
+}
+
+.mta-w-1\/4 {
+  width: 25%;
+}
+
+.mta-w-1\/5 {
+  width: 20%;
+}
+
+.mta-max-w-2xl {
+  max-width: 42rem;
+}
+
+.mta-max-w-4xl {
+  max-width: 56rem;
+}
+
+.mta-flex-grow {
+  flex-grow: 1;
+}
+
+.mta-cursor-pointer {
+  cursor: pointer;
+}
+
+.mta-list-disc {
+  list-style-type: disc;
+}
+
+.mta-appearance-none {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+}
+
+.mta-grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.mta-flex-col {
+  flex-direction: column;
+}
+
+.mta-items-center {
+  align-items: center;
+}
+
+.mta-items-stretch {
+  align-items: stretch;
+}
+
+.mta-justify-end {
+  justify-content: flex-end;
+}
+
+.mta-justify-center {
+  justify-content: center;
+}
+
+.mta-gap-2 {
+  gap: 0.5rem;
+}
+
+.mta-gap-4 {
+  gap: 1rem;
+}
+
+.mta-self-start {
+  align-self: flex-start;
+}
+
+.mta-overflow-y-auto {
+  overflow-y: auto;
+}
+
+.mta-rounded-full {
+  border-radius: 9999px;
+}
+
+.mta-border-2 {
+  border-width: 2px;
+}
+
+.mta-border-b-2 {
+  border-bottom-width: 2px;
+}
+
+.mta-border-b {
+  border-bottom-width: 1px;
+}
+
+.mta-border-b-4 {
+  border-bottom-width: 4px;
+}
+
+.mta-border-black {
+  --tw-border-opacity: 1;
+  border-color: rgb(0 0 0 / var(--tw-border-opacity));
+}
+
+.mta-border-primary-300 {
+  --tw-border-opacity: 1;
+  border-color: rgb(15 97 169 / var(--tw-border-opacity));
+}
+
+.mta-border-grey-300 {
+  --tw-border-opacity: 1;
+  border-color: rgb(235 228 227 / var(--tw-border-opacity));
+}
+
+.mta-border-white {
+  --tw-border-opacity: 1;
+  border-color: rgb(255 255 255 / var(--tw-border-opacity));
+}
+
+.mta-bg-primary-300 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(15 97 169 / var(--tw-bg-opacity));
+}
+
+.mta-bg-slate-300 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(203 213 225 / var(--tw-bg-opacity));
+}
+
+.mta-bg-white {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
+
+.mta-bg-primary-000 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(227 242 255 / var(--tw-bg-opacity));
+}
+
+.mta-bg-\[\#f3f3f3\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(243 243 243 / var(--tw-bg-opacity));
+}
+
+.mta-bg-grey-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(31 32 37 / var(--tw-bg-opacity));
+}
+
+.mta-bg-grey-000 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
+
+.mta-bg-cover {
+  background-size: cover;
+}
+
+.mta-object-cover {
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.mta-p-2 {
+  padding: 0.5rem;
+}
+
+.mta-p-4 {
+  padding: 1rem;
+}
+
+.mta-p-8 {
+  padding: 2rem;
+}
+
+.mta-py-0\.5 {
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
+}
+
+.mta-px-1 {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+}
+
+.mta-py-0 {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.mta-py-1 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.mta-px-2 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.mta-py-6 {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.mta-px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.mta-py-2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.mta-px-8 {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.mta-px-12 {
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+
+.mta-pb-2 {
+  padding-bottom: 0.5rem;
+}
+
+.mta-pb-8 {
+  padding-bottom: 2rem;
+}
+
+.mta-text-center {
+  text-align: center;
+}
+
+.mta-text-right {
+  text-align: right;
+}
+
+.mta-text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+.mta-text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.mta-text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.mta-text-\[0\.75rem\] {
+  font-size: 0.75rem;
+}
+
+.mta-text-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.mta-text-4xl {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+}
+
+.mta-text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+.mta-text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.mta-font-bold {
+  font-weight: 700;
+}
+
+.mta-font-medium {
+  font-weight: 500;
+}
+
+.mta-uppercase {
+  text-transform: uppercase;
+}
+
+.mta-leading-tight {
+  line-height: 1.25;
+}
+
+.mta-text-primary-300 {
+  --tw-text-opacity: 1;
+  color: rgb(15 97 169 / var(--tw-text-opacity));
+}
+
+.mta-text-white {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.mta-text-grey-1200 {
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+.mta-text-grey-000 {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.mta-underline {
+  text-decoration-line: underline;
+}
+
+#mta-burger-trigger ~ .mta-burger-content {
+  display: none;
+}
+
+.mta-dropdown-tr ~ ul,
+.mta-offscreen-dropdown-tr ~ div.mta-absolute,
+#mta-burger-trigger:checked ~ header .mta-tr-burger-open {
+  display: none;
+}
+
+.mta-dropdown-tr:checked ~ div.mta-flex label {
+  --tw-bg-opacity: 1;
+  background-color: rgb(15 97 169 / var(--tw-bg-opacity));
+}
+
+.mta-dropdown-tr:checked ~ div.mta-flex label svg {
+  transform: rotate(180deg);
+}
+
+.mta-dropdown-tr:checked ~ ul,
+.mta-offscreen-dropdown-tr:checked ~ div.mta-absolute,
+#mta-burger-trigger:checked ~ .mta-burger-content,
+#mta-burger-trigger:checked ~ header .mta-tr-burger-close {
+  display: block;
+}
+
+.mta-dropdown-tr:checked ~ ul {
+  margin-left: 0px;
+}
+
+#mta-burger-trigger:checked ~ header label.mta-absolute {
+  --tw-bg-opacity: 1;
+  background-color: rgb(15 97 169 / var(--tw-bg-opacity));
+}
+
+.mta-offscreen-dropdown-tr ~ label svg {
+  margin-left: auto;
+  transform: rotate(-90deg);
+  height: 16px;
+  width: 16px;
+}
+
+.mta-prose {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 42rem;
+}
+
+.mta-prose p:not(:last-child) {
+  margin-bottom: 1.5rem;
+}
+
+.mta-prose ul {
+  margin-left: 1rem;
+  list-style-type: disc;
+}
+
+.mta-prose ul:not(:last-child) {
+  margin-bottom: 1.5rem;
+}
+
+.mta-prose h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  font-weight: 700;
+}
+
+.mta-prose h3 {
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 700;
+}
+
+.mta-prose h4 {
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+}
+
+.mta-prose .columns {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.mta-prose a {
+  --tw-text-opacity: 1;
+  color: rgb(15 97 169 / var(--tw-text-opacity));
+  font-weight: bold;
+}
+
+.mta-prose a:hover {
+  text-decoration: underline;
+}
+
+.mta-card:hover .mta-card-title {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.mta-card-title {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  --tw-text-opacity: 1;
+  color: rgb(15 97 169 / var(--tw-text-opacity));
+}
+
+[type=text], [type=password], [type=date], [type=datetime], [type=datetime-local], [type=month], [type=week], [type=email], [type=tel], [type=time], [type=url], [type=color], [type=number], [type=search], select, textarea {
+  margin: 0;
+  height: auto;
+  border-color: #fff;
+  background-color: #fff;
+}
+
+button.mta-border-2 {
+  border: 2px solid #fff;
+}
+
+.jobs-section__heading {
+  border-bottom-width: 2px;
+  --tw-border-opacity: 1;
+  border-color: rgb(0 0 0 / var(--tw-border-opacity));
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.jobs-section__item {
+  border-bottom-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgb(0 0 0 / var(--tw-border-opacity));
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.jobs-section__item .space-none {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.mta-dropdown-tr:checked ~ div.jobs-section__item .space-none label {
+  --tw-bg-opacity: 1;
+  background-color: rgb(15 97 169 / var(--tw-bg-opacity));
+}
+
+.mta-dropdown-tr:checked ~ div.jobs-section__item .space-none label svg {
+  transform: rotate(180deg);
+}
+
+.jobs-section__item a {
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(15 97 169 / var(--tw-text-opacity));
+}
+
+.mta-new-job,
+.mta-hot-job {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  align-self: flex-start;
+  --tw-bg-opacity: 1;
+  background-color: rgb(15 97 169 / var(--tw-bg-opacity));
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.mta-hot-job {
+  --tw-bg-opacity: 1;
+  background-color: rgb(190 18 60 / var(--tw-bg-opacity));
+}
+
+.facet-item__option-link {
+  display: flex;
+  width: 100%;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(15 97 169 / var(--tw-text-opacity));
+}
+
+.mta-dropdown-tr:checked ~ div.facet-item__option-link label {
+  --tw-bg-opacity: 1;
+  background-color: rgb(15 97 169 / var(--tw-bg-opacity));
+}
+
+.mta-dropdown-tr:checked ~ div.facet-item__option-link label svg {
+  transform: rotate(180deg);
+}
+
+.facet-item__option-link:hover {
+  text-decoration-line: underline;
+}
+
+.facet-item__options-item.show-for-sr {
+  display: none;
+}
+
+.facet-item__heading {
+  margin-top: 1rem;
+  font-weight: 700;
+}
+
+.facet-item__option-item-count {
+  margin-left: auto;
+  width: 2rem;
+  align-self: flex-start;
+  border-radius: 9999px;
+  --tw-bg-opacity: 1;
+  background-color: rgb(203 213 225 / var(--tw-bg-opacity));
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  text-align: center;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+  text-decoration-line: none;
+}
+
+.facet-item__option-link:hover .facet-item__option-item-count {
+  text-decoration: none !important;
+}
+
+.jobs-category-section h1 {
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+  text-align: left;
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  font-weight: 700;
+}
+
+@media (min-width: 640px) {
+  .jobs-category-section h1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.search-form {
+  margin-bottom: 2rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+@media (min-width: 1024px) {
+  .search-form {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+.search-form input[type=text] {
+  margin-bottom: 0.5rem;
+  width: 100%;
+  border-width: 2px;
+  --tw-border-opacity: 1;
+  border-color: rgb(15 97 169 / var(--tw-border-opacity));
+  padding: 0.5rem;
+}
+
+button.search-form input[type=text] {
+  border: 2px solid #fff;
+}
+
+@media (min-width: 1024px) {
+  .search-form input[type=text] {
+    margin-bottom: 0px;
+  }
+}
+
+.search-form a.branded-button {
+  display: none;
+}
+
+.search-form input.branded-button {
+  border-width: 2px;
+  --tw-border-opacity: 1;
+  border-color: rgb(15 97 169 / var(--tw-border-opacity));
+  padding: 0.5rem;
+  font-weight: 500;
+  --tw-text-opacity: 1;
+  color: rgb(15 97 169 / var(--tw-text-opacity));
+}
+
+button.search-form input.branded-button {
+  border: 2px solid #fff;
+}
+
+.search-form input.branded-button:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(15 97 169 / var(--tw-bg-opacity));
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.search-form .candidate-notification-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  --tw-text-opacity: 1;
+  color: rgb(15 97 169 / var(--tw-text-opacity));
+  text-decoration-line: underline;
+}
+
+.mta-dropdown-tr:checked ~ div.search-form .candidate-notification-link label {
+  --tw-bg-opacity: 1;
+  background-color: rgb(15 97 169 / var(--tw-bg-opacity));
+}
+
+.mta-dropdown-tr:checked ~ div.search-form .candidate-notification-link label svg {
+  transform: rotate(180deg);
+}
+
+@media (min-width: 1024px) {
+  .search-form .candidate-notification-link {
+    justify-content: flex-end;
+  }
+}
+
+.facet-section h4 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+}
+
+.facet-section h4 .facet-item__option-link {
+  justify-content: flex-end;
+  text-align: right;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(15 97 169 / var(--tw-text-opacity));
+}
+
+.facet-section h4 .facet-item__option-link:hover {
+  text-decoration-line: underline;
+}
+
+.mta-records-showing,
+.mta-records-per-page {
+  margin-top: -0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.mta-dropdown-tr:checked ~ div.mta-records-showing label,.mta-dropdown-tr:checked ~ div
+.mta-records-per-page label {
+  --tw-bg-opacity: 1;
+  background-color: rgb(15 97 169 / var(--tw-bg-opacity));
+}
+
+.mta-dropdown-tr:checked ~ div.mta-records-showing label svg,.mta-dropdown-tr:checked ~ div
+.mta-records-per-page label svg {
+  transform: rotate(180deg);
+}
+
+.mta-records-per-page {
+  justify-content: flex-end;
+}
+
+.the-per-page,
+#the-per-page {
+  padding: 0.25rem;
+  height: 2rem;
+}
+
+.the-sign-up-bar {
+  margin-top: 3rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.the-sign-up-bar .branded-button {
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(15 97 169 / var(--tw-text-opacity));
+}
+
+.the-sign-up-bar .branded-button:hover {
+  text-decoration-line: underline;
+}
+
+.mta-job-info {
+  margin-bottom: 1rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(227 242 255 / var(--tw-bg-opacity));
+}
+
+.mta-job-info p {
+  margin: 0px;
+}
+
+#apply-top a {
+  display: block;
+  width: 100%;
+  text-align: center;
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+#apply-top a:hover {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.similar-jobs-element-js a {
+  --tw-text-opacity: 1;
+  color: rgb(15 97 169 / var(--tw-text-opacity));
+}
+
+.similar-jobs-element-js a:hover {
+  text-decoration-line: underline;
+}
+
+.job-details__similar-jobs-item {
+  margin-bottom: 0.5rem;
+}
+
+.hover\:mta-bg-primary-300:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(15 97 169 / var(--tw-bg-opacity));
+}
+
+.hover\:mta-bg-white:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
+
+.hover\:mta-text-grey-000:hover {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.hover\:mta-text-primary-300:hover {
+  --tw-text-opacity: 1;
+  color: rgb(15 97 169 / var(--tw-text-opacity));
+}
+
+.hover\:mta-text-white:hover {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.hover\:mta-underline:hover {
+  text-decoration-line: underline;
+}
+
+@media (min-width: 640px) {
+  .sm\:mta-flex {
+    display: flex;
+  }
+
+  .sm\:mta-hidden {
+    display: none;
+  }
+
+  .sm\:mta-grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sm\:mta-flex-row {
+    flex-direction: row;
+  }
+
+  .sm\:mta-justify-start {
+    justify-content: flex-start;
+  }
+
+  .sm\:mta-px-0 {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+
+  .sm\:mta-text-5xl {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+@media (min-width: 768px) {
+  .md\:mta-flex-row {
+    flex-direction: row;
+  }
+
+  .md\:mta-items-center {
+    align-items: center;
+  }
+
+  .md\:mta-justify-center {
+    justify-content: center;
+  }
+}
+
+@media (min-width: 1024px) {
+  .lg\:mta-absolute {
+    position: absolute;
+  }
+
+  .lg\:mta-h-full {
+    height: 100%;
+  }
+
+  .lg\:mta-w-\[475px\] {
+    width: 475px;
+  }
+
+  .lg\:mta-ml-auto {
+    margin-left: auto;
+  }
+
+  .lg\:mta-grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .lg\:mta-justify-end {
+    justify-content: flex-end;
+  }
+
+  .lg\:mta-px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .lg\:mta-py-12 {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  .lg\:mta-px-8 {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  .lg\:mta-py-8 {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .xl\:mta-py-24 {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+
+  .xl\:mta-py-12 {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+}
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+}
+
+.pagination img {
+  width: 1rem;
+  height: 1rem;
+  display: block;
+  max-width: none;
+}
+
+.pagination .current {
+  background: none;
+  color: #000;
+  font-weight: bold;
+  border-bottom: 2px solid #000;
+}
+                                                                                                
+#Alert {
+    background-color: #FFFDCD !important;
+}
+
+.mta-burger-content {
+  z-index: 100;
+}
+
+.mta-burger-content [type="checkbox"] + label {
+  display: flex;
+  font-size: inherit;
+  margin: 0;
+}
+
+.mta-burger-content .mta-top-full {
+  top: 0 !important;
+}
+
+.mta-burger-content ul {
+  margin: 0;
+}
+                                         

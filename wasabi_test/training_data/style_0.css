@@ -1,0 +1,16 @@
+@media print {
+	.large-1 { width: 8.33333% !important; }
+	.large-2 { width: 16.66667% !important; }
+	.large-3 { width: 25% !important; }
+	.large-4 { width: 33.33333% !important; }
+	.large-5 { width: 41.66667% !important; }
+	.large-6 { width: 50% !important; }
+	.large-7 { width: 58.33333% !important; }
+	.large-8 { width: 66.66667% !important; }
+	.large-9 { width: 75% !important; }
+	.large-10 { width: 83.33333% !important; }
+	.large-11 { width: 91.66667% !important; }
+	.large-12 { width: 100% !important; }
+	a[href*="/"]:after, a[href*="/"]:visited:after {content: normal !important;}
+	.job-category__item img { height: auto !important; }
+}
