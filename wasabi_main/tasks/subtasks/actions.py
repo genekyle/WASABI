@@ -1,7 +1,7 @@
 import asyncio
 import random
 import logging
-from typing import Optional, Callable, Any
+from typing import Optional, Callable, Any, List, Dict
 from playwright.async_api import Page, TimeoutError
 from functools import wraps
 from asyncio import Event
@@ -42,7 +42,7 @@ class GlobalActionTask:
         """
         try:
             # Specific CAPTCHA container with a descendant link containing 'cloudflare'
-            await page.wait_for_selector("//div[@id='content'][.//a[contains(@href, 'cloudflare')]]", state="visible", timeout=5000)
+            await page.wait_for_selector("//div[@id='content'][.//a[contains(@href, 'cloudflare')]]", state="visible", timeout=10000)
             print("CAPTCHA detected. Please solve the CAPTCHA manually.")
             self.interaction_allowed.clear()  # Block further interactions
 
@@ -106,6 +106,8 @@ class GlobalActionTask:
 
     async def smooth_mouse_move(self, page: Page, start_x, start_y, end_x, end_y):
         """Smoothly moves the mouse from start to end coordinates using a Bezier curve."""
+        logging.info(f"Starting mouse movement from ({start_x}, {start_y})")
+        
         # Control points could be randomized slightly to make the curve less predictable
         control1_x = start_x + (end_x - start_x) * 0.3 + random.randint(-10, 10)
         control1_y = start_y + (end_y - start_y) * 0.3 + random.randint(-10, 10)
@@ -119,6 +121,8 @@ class GlobalActionTask:
             y = self.calculate_bezier_point(t, start_y, control1_y, control2_y, end_y)
             await page.mouse.move(x, y)
             await asyncio.sleep(random.uniform(0.02, 0.05))  # Short delay to mimic human speed
+
+        logging.info(f"Ending mouse movement at ({end_x}, {end_y})")
 
     @handle_element_errors
     async def hover_and_click(self, page: Page, xpath: str, element_description: str,
@@ -188,49 +192,129 @@ class GlobalActionTask:
             return False
     
     @handle_element_errors
-    async def confirm_navigation(self, page: Page, page_name: str, expected_url_contains: Optional[str] = None, 
-                                xpath_selector: Optional[str] = None, timeout: int = 10000):
+    async def check_input_value(self, page: Page, input_description: str, expected_value: str, xpath: str):
         """
-        Confirms that the current page's URL contains a specified substring or that a specific element is present using XPath.
-        This function is designed to ensure that navigation has reached the correct destination and can handle dynamic URL structures.
+        Checks if the input field contains the expected value.
 
         Args:
-            page (Page): The Playwright page object on which actions are performed.
-            page_name (str): A descriptive name for the page, used for logging and error messages.
-            expected_url_contains (Optional[str]): A substring that should be present in the current page's URL. This parameter 
-                                                is useful for situations where the exact URL is not known ahead of time or can vary.
-            xpath_selector (Optional[str]): An XPath selector specifying an element that should be present on the page. This is used
-                                            to confirm that the expected content has loaded.
-            timeout (int): The maximum time, in milliseconds, to wait for the URL or element to be confirmed.
-
-        Raises:
-            TimeoutError: If the URL does not contain the expected substring or the element does not appear within the specified timeout.
-            ValueError: If neither `expected_url_contains` nor `xpath_selector` is provided, indicating that there are no criteria specified for confirmation.
+            page (Page): The Playwright page object where actions are performed.
+            expected_value (str): The value that is expected to be in the input field.
+            xpath (str): The XPath to the input field.
 
         Returns:
-            bool: True if the navigation is confirmed by either URL or element presence, False otherwise.
+            bool: True if the input field contains the expected value, False otherwise.
         """
-        try:
-            if expected_url_contains:
-                # Wait until the URL contains the specified substring
-                await page.wait_for_function(
-                    f"window.location.href.includes('{expected_url_contains}')", timeout=timeout)
-                current_url = page.url
-                if expected_url_contains not in current_url:
-                    raise TimeoutError(f"Expected URL part '{expected_url_contains}' not found in {current_url}")
-                logging.info(f"Navigation to {page_name} confirmed, URL contains: {expected_url_contains}")
+        # Retrieve the current value from the input field
+        current_value = await page.input_value(xpath)
 
-            if xpath_selector:
-                await page.wait_for_selector(f'xpath={xpath_selector}', state="attached", timeout=timeout)
-                logging.info(f"Element confirmed on {page_name} using XPath: {xpath_selector}")
+        # Compare the current value with the expected value
+        if current_value == expected_value:
+            print(f"Input check passed: {input_description} contains the expected value.")
+            return True
+        else:
+            print(f"Input check failed: {input_description} does not contain the expected value. Found: {current_value}")
+            return False
 
-        except TimeoutError as e:
-            logging.error(f"Failed to confirm {page_name}. Error: {e}")
-            # Optional: Handle additional checks for bot detection or other issues
-            await self.handle_additional_checks(page)
+    
+    @handle_element_errors
+    async def confirm_navigation(self, page: Page, page_name: str, 
+                             outcomes: Dict[str, List[str]], 
+                             timeout: int = 10000):
+        """
+        Confirms navigation by checking a dictionary of URLs and their associated XPath selectors.
+        
+        Args:
+            page (Page): The Playwright page object on which actions are performed.
+            page_name (str): Descriptive name for the page, used for logging.
+            outcomes (Dict[str, List[str]]): Dictionary where keys are URLs and values are lists of XPath selectors associated with those URLs.
+            timeout (int): Timeout in milliseconds for each check.
+        
+        Returns:
+            dict: Information about which URL and element were confirmed.
+        """
+        result = {
+            'url_confirmed': None,
+            'element_confirmed': None
+        }
+        current_url = page.url
 
-        if not expected_url_contains and not xpath_selector:
-            raise ValueError(f"Either expected_url_contains or xpath_selector must be provided for {page_name}.")
+        # Iterate over each URL and its associated selectors
+        for url, selectors in outcomes.items():
+            if url in current_url:
+                result['url_confirmed'] = url
+                logging.info(f"Navigation to {page_name} confirmed, URL contains: {url}")
+
+                # Check each selector associated with the URL
+                for selector in selectors:
+                    try:
+                        await page.wait_for_selector(f'xpath={selector}', state="attached", timeout=timeout)
+                        result['element_confirmed'] = selector
+                        logging.info(f"Element confirmed on {page_name} using XPath: {selector}")
+                        return result
+                    except TimeoutError:
+                        continue
+                break
+
+        if not result['url_confirmed']:
+            logging.error(f"Failed to confirm navigation to any expected URLs on {page_name}.")
+        if not result['element_confirmed']:
+            logging.error(f"No expected elements found on {page_name} after confirming URL.")
+
+        return result
+
+    async def handle_additional_checks(self, page: Page):
+        """
+        Placeholder for additional checks, such as bot detection handling.
+        """
+        # Implementation of additional security or bot detection measures.
+        logging.info("Implement additional checks here.")
+    
+    async def perform_steps(self, page: Page, steps):
+        """
+        Performs a sequence of specified actions and checks on a given page, following a direct sequence.
+
+        Args:
+            page (Page): Playwright page object where actions are performed.
+            steps (list of dict): Each dictionary defines an action or a check.
+
+        Each dictionary in the steps list must include:
+            - 'type': str ('hover_and_click' or 'confirm_navigation')
+            - 'params': dict (parameters specific to the type)
+
+        Example usage:
+            steps = [
+                {
+                    'type': 'hover_and_click',
+                    'params': {
+                        'xpath': "//button[@id='skip']",
+                        'description': "Skip Intro",
+                        'hover_pause_type': "short",
+                        'click_pause_type': "medium"
+                    }
+                },
+                {
+                    'type': 'confirm_navigation',
+                    'params': {
+                        'page_name': "Main Page",
+                        'expected_url_contains': "homepage",
+                        'timeout': 15000
+                    }
+                }
+            ]
+        """
+        for step in steps:
+            if step['type'] == 'hover_and_click':
+                await self.hover_and_click(page, **step['params'])
+            elif step['type'] == 'confirm_navigation':
+                confirmed = await self.confirm_navigation(page, **step['params'])
+                if not confirmed:
+                    print(f"Failed to confirm navigation to: {step['params']['page_name']}")
+                    return False
+                else:
+                    print(f"Successfully navigated to: {step['params']['page_name']}")
+            
+            # Optionally include random waits or other actions between steps
+            await asyncio.sleep(random.uniform(1, 2))  # Random short pause for realism
 
         return True
 

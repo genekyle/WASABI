@@ -1,4 +1,4 @@
-import asyncio
+import asyncio, random
 from playwright.async_api import Page
 from tasks.subtasks.actions import GlobalActionTask
  
@@ -7,6 +7,134 @@ class IndeedLogin:
         self.username = username
         self.password = password
         self.action_task = GlobalActionTask()  # Create an instance of GlobalActionTask
+    
+    async def onboarding_redirect1(self, page):
+        print("Performing onboarding_redirect 1...")
+        # Use hover_and_click to click on the indeed logo to redirect to homepage button during the onboarding page
+        indeed_logo_xpath = "//a[contains(@data-gnav-element-name, 'Logo')]"
+        indeed_home_job_feed_xpath = "//button[contains(@aria-controls, 'jobfeed-content')]"
+        steps = [
+            {
+                'type': 'hover_and_click',
+                'params': {
+                    'xpath': indeed_logo_xpath,
+                    'element_description': "Indeed Logo",
+                    'hover_pause_type': "short",
+                    'click_pause_type': "medium"
+                }
+            },
+            {
+                'type': 'confirm_navigation',
+                'params': {
+                    'page_name': "Indeed Home Page - Logged In",
+                    'outcomes' : {
+                        "https://www.indeed.com/": [f"{indeed_home_job_feed_xpath}"]
+                    },
+                    'timeout': 15000
+                }
+            }
+        ]
+        await self.action_task.perform_steps(page, steps)
+
+    async def onboarding_redirect2(self, page):
+        print("Performing onboarding_redirect 2...")
+        onboarding_skip_button_xpath = "//button[contains(@data-tn-element,'skip-section')]"
+        onboarding_pay_h1_xpath = """//h1[contains(text(),"What's the minimum pay you're looking for?")]"""
+        onboarding_job_h1_xpath = """//h1[contains(text(),"What job are you looking for?")]"""
+        indeed_home_job_feed_xpath = "//button[contains(@aria-controls, 'jobfeed-content')]"
+        steps = [
+            {
+                'type': 'hover_and_click',
+                'params': {
+                    'xpath': onboarding_skip_button_xpath,
+                    'element_description': "Onboarding Skip Button",
+                    'hover_pause_type': "short",
+                    'click_pause_type': "medium"
+                }
+            },
+            {
+                'type': 'confirm_navigation',
+                'params': {
+                    'page_name': "Indeed Job Search Onboarding - Pay Amount",
+                    'outcomes': {
+                        "https://onboarding.indeed.com/onboarding/pay": [f"{onboarding_pay_h1_xpath}"]
+                    },
+                    'timeout': 15000
+                }
+            },
+            {
+                'type': 'hover_and_click',
+                'params': {
+                    'xpath': onboarding_skip_button_xpath,
+                    'element_description': "Onboarding Skip Button",
+                    'hover_pause_type': "short",
+                    'click_pause_type': "medium"
+                }
+            },
+            {
+                'type': 'confirm_navigation',
+                'params': {
+                    'page_name': "Indeed Job Search Onboarding - Desired Job",
+                    'outcomes': {
+                        "https://onboarding.indeed.com/onboarding/desired-job": [f"{onboarding_job_h1_xpath}"]
+                    },
+                    'timeout': 15000
+                }
+            },
+            {
+                'type': 'hover_and_click',
+                'params': {
+                    'xpath': onboarding_skip_button_xpath,
+                    'element_description': "Onboarding Skip Button",
+                    'hover_pause_type': "short",
+                    'click_pause_type': "medium"
+                }
+            },
+            {
+                'type': 'confirm_navigation',
+                'params': {
+                    'page_name': "Indeed Home Page - Logged In",
+                    'outcomes': {
+                        "https://www.indeed.com/": [f"{indeed_home_job_feed_xpath}"]
+                    },
+                    'timeout': 15000
+                }
+            }
+        ]
+        await self.action_task.perform_steps(page, steps)
+
+    async def onboarding_redirect3(self, page):
+        print("Performing onboarding_redirect 3...")
+        indeed_home_button_xpath = "//a[contains(@id,'FindJobs')]"
+        indeed_home_job_feed_xpath = "//button[contains(@aria-controls, 'jobfeed-content')]"
+        steps = [
+            {
+                'type': 'hover_and_click',
+                'params': {
+                    'xpath': indeed_home_button_xpath,
+                    'element_description': "Indeed Logo",
+                    'hover_pause_type': "short",
+                    'click_pause_type': "medium"
+                }
+            },
+            {
+                'type': 'confirm_navigation',
+                'params': {
+                    'page_name': "Indeed Home Page - Logged In",
+                    'outcomes': {
+                        "https://www.indeed.com/": [f"{indeed_home_job_feed_xpath}"]
+                    },
+                    'timeout': 15000
+                }
+            }
+        ]
+        await self.action_task.perform_steps(page, steps)
+
+    async def handle_onboarding(self, page):
+        print("Handling onboarding logic...")
+        action = random.choice([self.onboarding_redirect1, self.onboarding_redirect2, self.onboarding_redirect1])
+        await action(page)  # Execute the chosen action
+
 
     async def login(self, page: Page):
         # Navigate to Indeed's main page
@@ -29,21 +157,23 @@ class IndeedLogin:
         )
         
         # Check to see if the redirected page is the login page
-        login_page_url = "https://secure.indeed.com/auth"
-        login_page_span_xpath = "//span[contains(text(),'Create an account or sign in.')]"
         page_name = "Login Page"
+        # Single URL and Element
+        outcomes = {
+            "https://secure.indeed.com/auth": ["//span[contains(text(),'Create an account or sign in.')]"]
+        }
 
         # Confirms navigation to the intended page
-        if await self.action_task.confirm_navigation(
+        login_page_navigation = await self.action_task.confirm_navigation(
             page=page,
             page_name=page_name,
-            expected_url_contains=login_page_url,
-            xpath_selector=login_page_span_xpath,
+            outcomes=outcomes,
             timeout=15000
-        ):
-            print(f"Confirmed Navigation to: {page_name}")
+        )
+        if login_page_navigation['url_confirmed']:
+            print(f"Successfully navigated to and confirmed elements on: {login_page_navigation['url_confirmed']}")
         else:
-            print(f"Failed to Navigate to: {page_name}")
+            print("Failed to navigate to the login page or confirm the submit button.")
 
         # Look for, click on and type in the username input
         email_address_input_xpath = "//input[contains(@type, 'email')]"
@@ -63,7 +193,7 @@ class IndeedLogin:
             hover_pause_type="short",
             click_pause_type="medium"
         )
-        self.action_task.random_wait("short")
+        await self.action_task.random_wait("short")
         # Check for CAPTCHA
         captcha_detected = await self.action_task.check_for_captcha_and_pause(page)
         if captcha_detected:
@@ -117,6 +247,35 @@ class IndeedLogin:
         else:
             print("Proceeding without CAPTCHA intervention.")
         
-        
+        # Multiple URLs and Elements
+        outcomes = {
+            "https://onboarding.indeed.com/onboarding/": ["""//h1[contains(text(),"Let's make sure your preferences are up-to-date.")]"""],
+            "https://www.indeed.com/": ["//button[contains(@aria-controls, 'jobfeed')]"]
+        }
 
-        await asyncio.sleep(300)  # For demonstration purposes
+        navigation_result = await self.action_task.confirm_navigation(
+            page=page,
+            page_name="Post-Login Page",
+            outcomes=outcomes,
+            timeout=15000
+        )
+
+        if navigation_result['url_confirmed']:
+            print(f"Confirmed navigation to: {navigation_result['url_confirmed']}")
+            print(f"Confirmed element: {navigation_result['element_confirmed']}")
+
+            if navigation_result['url_confirmed'] == "https://onboarding.indeed.com/onboarding/":
+                print(f"Navigated To the onboarding page for indeed")
+                await self.handle_onboarding(page)
+                print("Fully Logged Into Indeed")
+                return True
+            
+            elif navigation_result['url_confirmed'] == "https://www.indeed.com/":
+                print("Fully Logged Into Indeed")
+                return True
+            
+        else:
+            print("Navigation check failed for login, returning false.")
+
+
+        

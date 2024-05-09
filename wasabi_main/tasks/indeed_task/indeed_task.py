@@ -3,6 +3,7 @@ import asyncio
 from tasks.browser_manager import BrowserManager
 from playwright.async_api import async_playwright
 from .login import IndeedLogin
+from .jobsearch import IndeedJobSearch
 
 class IndeedTask:
     def __init__(self, task_config):
@@ -24,6 +25,7 @@ class IndeedTask:
     async def run(self):
         selected_profile = self.task_config["selected_profile"]
         selected_location = self.task_config["selected_location"]
+        job_search_input = self.task_config["job_search_input"]
 
         user_profiles = self.load_user_profiles()
         selected_user = next(profile for profile in user_profiles if profile["profile_name"] == selected_profile)
@@ -31,8 +33,18 @@ class IndeedTask:
         login = IndeedLogin(username=selected_user["username"], password=selected_user["password"])
         context = await self.browser_manager.launch_browser()
         page = await context.new_page()
-        await login.login(page)
-        job_search_input = self.task_config["job_search_input"]
+        login_success = await login.login(page)
+        if login_success:
+            print("Login successful, initiating job search.")
+            job_search = IndeedJobSearch(page, self.task_config)
+            search_successful = await job_search.initiate_job_search()
+            if search_successful:
+                print("Job search initiated successfully.")
+                await asyncio.sleep(1500)  # For demonstration purposes
+            else:
+                print("Failed to initiate job search.")
+        else:
+            print("Login failed, not proceeding with job search.")
 
 
         print(f"Selected location: {selected_location}")
