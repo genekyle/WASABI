@@ -8,7 +8,7 @@ from .jobsearch import IndeedJobSearch
 class IndeedTask:
     def __init__(self, task_config):
         self.task_config = task_config
-        self.browser_manager = BrowserManager()
+        self.browser_manager = BrowserManager(keep_open=True)
 
     @staticmethod
     def load_locations():
@@ -37,10 +37,14 @@ class IndeedTask:
         if login_success:
             print("Login successful, initiating job search.")
             job_search = IndeedJobSearch(page, self.task_config)
-            search_successful = await job_search.initiate_job_search()
+            try:
+                search_successful = await job_search.initiate_job_search()
+            except Exception as e:
+                    print(f"Error on trying to initiate job search: ", e)
             if search_successful:
                 print("Job search initiated successfully.")
                 await asyncio.sleep(1500)  # For demonstration purposes
+            
             else:
                 print("Failed to initiate job search.")
         else:

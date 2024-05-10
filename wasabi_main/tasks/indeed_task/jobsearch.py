@@ -8,8 +8,7 @@ class IndeedJobSearch:
         self.task_config = task_config
         self.action_task = GlobalActionTask()  # Create an instance of GlobalActionTask
 
-
-    async def initiate_job_search(self):
+    async def initiate_job_search(self, page):
         job_searchbar_xpath = "//input[contains(@aria-label,'search: Job title, keywords, or company')]"
         job_search_text = self.task_config["job_search_input"]
         steps = [

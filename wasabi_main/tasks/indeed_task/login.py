@@ -8,6 +8,82 @@ class IndeedLogin:
         self.password = password
         self.action_task = GlobalActionTask()  # Create an instance of GlobalActionTask
     
+    async def handle_login_code(self, page, event):
+        print("Checking For Login Code Page")
+        # Check to see if the redirected page is the 'Sign In With Login Code' page
+        page_name = "Login Code Page"
+        outcomes = {
+            "https://secure.indeed.com": ["""//span[contains(text(),"We've sent your one-time passcode to")]"""]
+        }
+
+        # Confirm navigation to login code page
+        success, login_code_navigation = await self.action_task.confirm_navigation(
+            page=page,
+            page_name=page_name,
+            outcomes=outcomes,
+            timeout=1500
+        )
+        if success:
+            print("Handling Login Code Page")
+            print("Script paused. waiting 25 seconds...")
+            await asyncio.sleep(25)
+            print("Resuming script...")
+            await self.confirm_login(page)
+        else:
+            print("No Login Code Page Attempt #1 failed trying attempt #2")
+            page_name = "Login Code Page#2"
+            outcomes = {
+                "https://secure.indeed.com": ["""//h1[contains(text(),"2-Step Verification")]"""]
+            }
+
+            # Confirm navigation to login code page
+            success2, login_code_navigation2 = await self.action_task.confirm_navigation(
+                page=page,
+                page_name=page_name,
+                outcomes=outcomes,
+                timeout=1000
+            )
+            if success2:
+                print("Handling Login Code #2 Page")
+                print("Script paused. waiting 25 seconds...") 
+                await asyncio.sleep(25)
+                print("Resuming script...")
+                await self.confirm_login(page)
+            else:
+                print("Handle 2 step page not found, returning back to normal login script...")
+
+    async def confirm_login(self, page):
+        print("Confirming Login...")
+        # Multiple URLs and Elements
+        outcomes = {
+            "https://onboarding.indeed.com/onboarding/": ["""//h1[contains(text(),"Let's make sure your preferences are up-to-date.")]"""],
+            "https://www.indeed.com/": ["//button[contains(@aria-controls, 'jobfeed')]"]
+        }
+
+        success, navigation_result = await self.action_task.confirm_navigation(
+            page=page,
+            page_name="Post-Login Page",
+            outcomes=outcomes,
+            timeout=15000
+        )
+
+        if success:
+            print(f"Confirmed navigation to: {navigation_result['url_confirmed']}")
+            print(f"Confirmed element: {navigation_result['element_confirmed']}")
+
+            if "https://onboarding.indeed.com/onboarding/" in navigation_result['url_confirmed']:
+                print(f"Navigated To the onboarding page for indeed")
+                await self.handle_onboarding(page)
+                print("Fully Logged Into Indeed")
+                return True
+            
+            elif "https://www.indeed.com/" in navigation_result['url_confirmed']:
+                print("Fully Logged Into Indeed")
+                return True
+            
+        else:
+            print("Navigation check failed for login, returning false.")
+    
     async def onboarding_redirect1(self, page):
         print("Performing onboarding_redirect 1...")
         # Use hover_and_click to click on the indeed logo to redirect to homepage button during the onboarding page
@@ -139,6 +215,7 @@ class IndeedLogin:
     async def login(self, page: Page):
         # Navigate to Indeed's main page
         await page.goto("https://www.indeed.com/")
+        event = asyncio.Event()
         
         # Wait for the page to fully load and stabilize
         await page.wait_for_load_state('networkidle')
@@ -164,14 +241,16 @@ class IndeedLogin:
         }
 
         # Confirms navigation to the intended page
-        login_page_navigation = await self.action_task.confirm_navigation(
+        success, navigation_result = await self.action_task.confirm_navigation(
             page=page,
             page_name=page_name,
             outcomes=outcomes,
             timeout=15000
         )
-        if login_page_navigation['url_confirmed']:
-            print(f"Successfully navigated to and confirmed elements on: {login_page_navigation['url_confirmed']}")
+
+        if success:
+            print(f"Successfully navigated to and confirmed elements on: {navigation_result['url_confirmed']}")
+            print(f"Element confirmed: {navigation_result['element_confirmed']}")
         else:
             print("Failed to navigate to the login page or confirm the submit button.")
 
@@ -194,6 +273,8 @@ class IndeedLogin:
             click_pause_type="medium"
         )
         await self.action_task.random_wait("short")
+        # Check for sign in with login code:
+        login_code_check = await self.handle_login_code(page, event)
         # Check for CAPTCHA
         captcha_detected = await self.action_task.check_for_captcha_and_pause(page)
         if captcha_detected:
@@ -233,6 +314,8 @@ class IndeedLogin:
             hover_pause_type="short",
             click_pause_type="medium"
         )
+        # Check for sign in with login code:
+        login_code_check = await self.handle_login_code(page, event)
         await self.action_task.random_wait("long")
         captcha_detected = await self.action_task.check_for_captcha_and_pause(page)
         if captcha_detected:
@@ -247,35 +330,8 @@ class IndeedLogin:
         else:
             print("Proceeding without CAPTCHA intervention.")
         
-        # Multiple URLs and Elements
-        outcomes = {
-            "https://onboarding.indeed.com/onboarding/": ["""//h1[contains(text(),"Let's make sure your preferences are up-to-date.")]"""],
-            "https://www.indeed.com/": ["//button[contains(@aria-controls, 'jobfeed')]"]
-        }
-
-        navigation_result = await self.action_task.confirm_navigation(
-            page=page,
-            page_name="Post-Login Page",
-            outcomes=outcomes,
-            timeout=15000
-        )
-
-        if navigation_result['url_confirmed']:
-            print(f"Confirmed navigation to: {navigation_result['url_confirmed']}")
-            print(f"Confirmed element: {navigation_result['element_confirmed']}")
-
-            if navigation_result['url_confirmed'] == "https://onboarding.indeed.com/onboarding/":
-                print(f"Navigated To the onboarding page for indeed")
-                await self.handle_onboarding(page)
-                print("Fully Logged Into Indeed")
-                return True
-            
-            elif navigation_result['url_confirmed'] == "https://www.indeed.com/":
-                print("Fully Logged Into Indeed")
-                return True
-            
-        else:
-            print("Navigation check failed for login, returning false.")
+        await self.confirm_login(page)
+        
 
 
         

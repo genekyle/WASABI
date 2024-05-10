@@ -3,10 +3,12 @@ from playwright.async_api import async_playwright
 import os, random
 
 class BrowserManager:
-    def __init__(self):
+    def __init__(self, keep_open=False):
         self.playwright = None
         self.browser = None
         self.context = None
+        self.keep_open = keep_open  # Flag to control whether to keep the browser open
+
 
     async def launch_browser(self):
         def get_random_viewport():
@@ -14,7 +16,7 @@ class BrowserManager:
                 {'width': 1920, 'height': 1080},  # Typical desktop
                 {'width': 1366, 'height': 768}    # Common laptop
             ]
-            weights = [75, 25]  # 75% chance for desktop, 25% for laptop
+            weights = [10, 90]  # 10% chance for desktop, 90% for laptop
             chosen_viewport = random.choices(viewports, weights, k=1)[0]
             return chosen_viewport
 
@@ -55,14 +57,17 @@ class BrowserManager:
         return self.context
 
     async def close_browser(self):
-        if self.context:
-            await self.context.close()
-            self.context = None
+        if not self.keep_open:  # Only close if keep_open is False
+            if self.context:
+                await self.context.close()
+                self.context = None
 
-        if self.browser:
-            await self.browser.close()
-            self.browser = None
+            if self.browser:
+                await self.browser.close()
+                self.browser = None
 
-        if self.playwright:
-            await self.playwright.stop()
-            self.playwright = None
+            if self.playwright:
+                await self.playwright.stop()
+                self.playwright = None
+        else:
+            print("Browser remains open for testing purposes.")

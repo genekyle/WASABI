@@ -14,13 +14,18 @@ class GlobalActionTask:
         self.mouse_tracker = {'x': None, 'y': None}
         self.interaction_allowed = Event()
         self.interaction_allowed.set()  # Initially allow interaction
+        self.action_registry = {
+            'hover_and_click': self.hover_and_click,
+            'confirm_navigation': self.confirm_navigation,
+            'check_input_value': self.check_input_value  # Adding the new method
+        }
 
     def handle_element_errors(func):
         """Decorator to handle errors for actions performed on page elements, capturing all arguments flexibly."""
         @wraps(func)  # Use wraps to preserve metadata like the function's name and docstring
         async def wrapper(self, *args, **kwargs):
             # Extract element_description intelligently based on args or kwargs
-            element_description = kwargs.get('element_description', args[1] if len(args) > 1 else 'Unknown element')
+            element_description = kwargs.get('element_descripti on', args[1] if len(args) > 1 else 'Unknown element')
             try:
                 return await func(self, *args, **kwargs)
             except TimeoutError as e:
@@ -217,9 +222,7 @@ class GlobalActionTask:
 
     
     @handle_element_errors
-    async def confirm_navigation(self, page: Page, page_name: str, 
-                             outcomes: Dict[str, List[str]], 
-                             timeout: int = 10000):
+    async def confirm_navigation(self, page: Page, page_name: str, outcomes: Dict[str, List[str]], timeout: int = 10000):
         """
         Confirms navigation by checking a dictionary of URLs and their associated XPath selectors.
         
@@ -230,7 +233,7 @@ class GlobalActionTask:
             timeout (int): Timeout in milliseconds for each check.
         
         Returns:
-            dict: Information about which URL and element were confirmed.
+            tuple: (bool, dict) where bool indicates if navigation was successful, and dict provides details of the navigation result.
         """
         result = {
             'url_confirmed': None,
@@ -238,29 +241,20 @@ class GlobalActionTask:
         }
         current_url = page.url
 
-        # Iterate over each URL and its associated selectors
         for url, selectors in outcomes.items():
             if url in current_url:
                 result['url_confirmed'] = url
-                logging.info(f"Navigation to {page_name} confirmed, URL contains: {url}")
-
-                # Check each selector associated with the URL
                 for selector in selectors:
                     try:
                         await page.wait_for_selector(f'xpath={selector}', state="attached", timeout=timeout)
                         result['element_confirmed'] = selector
-                        logging.info(f"Element confirmed on {page_name} using XPath: {selector}")
-                        return result
+                        return True, result
                     except TimeoutError:
                         continue
                 break
 
-        if not result['url_confirmed']:
-            logging.error(f"Failed to confirm navigation to any expected URLs on {page_name}.")
-        if not result['element_confirmed']:
-            logging.error(f"No expected elements found on {page_name} after confirming URL.")
-
-        return result
+        logging.error(f"Failed to confirm navigation for {page_name}. Current URL: {current_url}")
+        return False, result
 
     async def handle_additional_checks(self, page: Page):
         """
@@ -271,49 +265,33 @@ class GlobalActionTask:
     
     async def perform_steps(self, page: Page, steps):
         """
-        Performs a sequence of specified actions and checks on a given page, following a direct sequence.
+        Performs a sequence of specified actions and checks on a given page.
 
         Args:
             page (Page): Playwright page object where actions are performed.
-            steps (list of dict): Each dictionary defines an action or a check.
-
-        Each dictionary in the steps list must include:
-            - 'type': str ('hover_and_click' or 'confirm_navigation')
-            - 'params': dict (parameters specific to the type)
-
-        Example usage:
-            steps = [
-                {
-                    'type': 'hover_and_click',
-                    'params': {
-                        'xpath': "//button[@id='skip']",
-                        'description': "Skip Intro",
-                        'hover_pause_type': "short",
-                        'click_pause_type': "medium"
-                    }
-                },
-                {
-                    'type': 'confirm_navigation',
-                    'params': {
-                        'page_name': "Main Page",
-                        'expected_url_contains': "homepage",
-                        'timeout': 15000
-                    }
-                }
-            ]
+            steps (list): Each item in the list defines an action or a check.
         """
         for step in steps:
-            if step['type'] == 'hover_and_click':
-                await self.hover_and_click(page, **step['params'])
-            elif step['type'] == 'confirm_navigation':
-                confirmed = await self.confirm_navigation(page, **step['params'])
-                if not confirmed:
-                    print(f"Failed to confirm navigation to: {step['params']['page_name']}")
-                    return False
-                else:
-                    print(f"Successfully navigated to: {step['params']['page_name']}")
-            
-            # Optionally include random waits or other actions between steps
+            action_type = step['type']
+            params = step['params']
+            action_func = self.action_registry.get(action_type)
+
+            if not action_func:
+                print(f"Action type '{action_type}' is not supported.")
+                continue
+
+            # Execute the function corresponding to the action type
+            result = await action_func(page, **params)
+
+            # Handle the result based on the action type
+            if action_type == 'confirm_navigation' and not result['url_confirmed']:
+                print(f"Failed to confirm navigation to: {params['page_name']}")
+                return False
+            elif action_type in ['hover_and_click', 'check_input_value'] and not result:
+                print(f"Action '{action_type}' failed at step with description: {params.get('description', 'No description provided')}")
+                return False
+
+            print(f"Action '{action_type}' successful.")
             await asyncio.sleep(random.uniform(1, 2))  # Random short pause for realism
 
         return True
