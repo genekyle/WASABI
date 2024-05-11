@@ -275,6 +275,11 @@ class IndeedLogin:
         await self.action_task.random_wait("short")
         # Check for sign in with login code:
         login_code_check = await self.handle_login_code(page, event)
+        if login_code_check:
+            return True
+        else:
+            print("checked for login code page, passing to the rest of the script")
+            pass
         # Check for CAPTCHA
         captcha_detected = await self.action_task.check_for_captcha_and_pause(page)
         if captcha_detected:
@@ -316,6 +321,11 @@ class IndeedLogin:
         )
         # Check for sign in with login code:
         login_code_check = await self.handle_login_code(page, event)
+        if login_code_check:
+            return True
+        else:
+            print("checked for login code page, passing to the rest of the script")
+            pass
         await self.action_task.random_wait("long")
         captcha_detected = await self.action_task.check_for_captcha_and_pause(page)
         if captcha_detected:
